@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <sui-dimmer :active="isLoading" inverted>
-      <sui-loader content="Loading..."/>
+      <sui-loader indeterminate content="Loading..."/>
     </sui-dimmer>
     <div v-if="app_id && apiKey && appData && user ">
       <sui-segment

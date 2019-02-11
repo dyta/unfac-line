@@ -67,16 +67,21 @@ small.price {
     font-size: 12px;
 }
 
-.ui.fullscreen.modal {
-    width: 100% !important;
-    left: 0 !important;
-    margin: 0;
+
+@media (max-width: 769px) {
+    .ui.modal {
+        width: 100% !important;
+        left: 0 !important;
+        margin: 0;
+
+    }
+
+    .no-radius {
+        border-radius: 0 !important
+    }
 
 }
 
-.no-radius {
-    border-radius: 0 !important
-}
 
 .pt-5 {
     padding-top: 5rem;

@@ -30,9 +30,9 @@
               />
             </sui-item-description>
             <sui-button-group attached="bottom" class="pt-1">
-              <div is="sui-button" content="รายละเอียด"/>
-              <div
-                is="sui-button"
+              <sui-button content="รายละเอียด" circular/>
+              <sui-button
+                circular
                 :disabled="expired(item.workEndAt) || item.workStatus === 5"
                 :positive="!expired(item.workEndAt) && item.workStatus !== 5"
                 @click.native="toggle(item)"
@@ -50,9 +50,9 @@
           <sui-message-item>หากมีงานเข้ามาใหม่เราจะแจ้งเตือนให้คุณ {{user.empDisplayName}} ทราบเป็นคนแรก</sui-message-item>
         </sui-message-list>
       </sui-message>
-      <sui-button size="big" negative fluid @click="()=> $liff.closeWindow()">ออกจากระบบ</sui-button>
+      <sui-button size="big" circular negative fluid @click="()=> $liff.closeWindow()">ออกจากระบบ</sui-button>
     </sui-container>
-    <sui-modal v-model="open" animation="fly down" size="fullscreen">
+    <sui-modal v-model="open" :closable="!onClickLoading" animation="fly down" size="mini">
       <sui-modal-header class="no-radius" v-if="record">เลือกจำนวนที่ขอรับทำ</sui-modal-header>
       <sui-modal-content v-if="record">
         <sui-modal-description class="text-center">
@@ -60,7 +60,12 @@
           <sui-grid :columns="3" divided>
             <sui-grid-row>
               <sui-grid-column>
-                <sui-button class="btn-request" basic @click="minusAmount">
+                <sui-button
+                  class="btn-request"
+                  basic
+                  @click="minusAmount"
+                  :disabled="onClickLoading"
+                >
                   <sui-icon name="minus"/>
                 </sui-button>
               </sui-grid-column>
@@ -69,7 +74,7 @@
                 <h1 class="get-choose">{{request.amount}}</h1>
               </sui-grid-column>
               <sui-grid-column>
-                <sui-button class="btn-request" basic @click="addAmount">
+                <sui-button class="btn-request" basic @click="addAmount" :disabled="onClickLoading">
                   <sui-icon name="plus"/>
                 </sui-button>
               </sui-grid-column>
@@ -79,12 +84,14 @@
       </sui-modal-content>
       <sui-modal-actions v-if="record" class="no-radius">
         <sui-button
-          :disabled="!valid"
+          :disabled="!valid || onClickLoading"
           :positive="valid"
           fluid
           size="huge"
           content="ส่งคำขอ"
           class="ml-0"
+          @click="onClickRequestWork"
+          :loading="onClickLoading"
         />
       </sui-modal-actions>
     </sui-modal>
@@ -92,6 +99,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 export default {
   name: "home",
   data() {
@@ -99,6 +107,7 @@ export default {
       items: [],
       open: false,
       record: null,
+      onClickLoading: false,
       request: {
         amount: 0
       }
@@ -197,6 +206,31 @@ export default {
         }
         self.$store.commit("setLoading", false);
       });
+    },
+    async onClickRequestWork() {
+      let self = this;
+      let data = this.record;
+
+      this.onClickLoading = true;
+      let request = {
+        rwEmpId: self.user.empId,
+        rwStartAt: new Date(),
+        rwEndAt: self.$moment(data.workEndAt).subtract(1, "days"),
+        rwVolume: self.request.amount,
+        rwWorkId: data.workId,
+        workPickVolume: (data.workPickVolume + self.request.amount) * 1
+      };
+
+      const CreateRequest = await self.$api.post(
+        `/app/request/${self.app_Id}/${self.apiKey}`,
+        request
+      );
+      console.log("CreateRequest: ", CreateRequest);
+      if (CreateRequest) {
+        self.onClickLoading = false;
+        self.open = false;
+        self.fetch();
+      }
     }
   }
 };
