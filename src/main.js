@@ -35,40 +35,63 @@ new Vue({
     const APP_ID = await self.$route.query.appid
     const KEY = await self.$route.query.key
 
-    let profile = {
-      userId: "U983b8d629402fc43cd62e951978d6032",
-      displayName: ".ta",
-      pictureUrl: "https://i.stack.imgur.com/lcRsd.gif?s=32&g=1"
-    };
+
 
     if (APP_ID && KEY) {
       setTimeout(() => {
         store.commit("setLoading", false);
       }, 10 * 1000);
-
-      self.$liff.init(() => {
-        self.$liff.getProfile().then(async profile => {
-          store.commit("setAppId", APP_ID);
-          store.commit("setApiKey", KEY);
-          const appData = await self.$api.get(`/app/enterprise/${APP_ID}/${KEY}`);
-          if (appData) {
-            store.commit("setAppData", appData.data);
-            const user = await self.$api.get(`/app/employee/${profile.userId}/${APP_ID}`);
-            if (user.data) {
-              store.commit("setUser", user.data);
-            } else {
-              const createUser = await self.$api.post(`/app/employee/${profile.userId}/${APP_ID}`,
-                profile
-              );
-              if (createUser.data) {
-                const user = await self.$api.get(`/app/employee/${profile.userId}/${APP_ID}`);
+      if (!webpackHotUpdate) {
+        self.$liff.init((successCallback, errorCallback) => {
+          self.$liff.getProfile().then(async profile => {
+            store.commit("setAppId", APP_ID);
+            store.commit("setApiKey", KEY);
+            const appData = await self.$api.get(`/app/enterprise/${APP_ID}/${KEY}`);
+            if (appData) {
+              store.commit("setAppData", appData.data);
+              const user = await self.$api.get(`/app/employee/${profile.userId}/${APP_ID}`);
+              if (user.data) {
                 store.commit("setUser", user.data);
+              } else {
+                const createUser = await self.$api.post(`/app/employee/${profile.userId}/${APP_ID}`,
+                  profile
+                );
+                if (createUser.data) {
+                  const user = await self.$api.get(`/app/employee/${profile.userId}/${APP_ID}`);
+                  store.commit("setUser", user.data);
+                }
               }
             }
-          }
-          store.commit("setLoading", false);
+            store.commit("setLoading", false);
+          })
         })
-      })
+      } else {
+        let profile = {
+          userId: "U983b8d629402fc43cd62e951978d6032",
+          displayName: ".ta",
+          pictureUrl: "https://i.stack.imgur.com/lcRsd.gif?s=32&g=1"
+        };
+        store.commit("setAppId", APP_ID);
+        store.commit("setApiKey", KEY);
+        const appData = await self.$api.get(`/app/enterprise/${APP_ID}/${KEY}`);
+        if (appData) {
+          store.commit("setAppData", appData.data);
+          const user = await self.$api.get(`/app/employee/${profile.userId}/${APP_ID}`);
+          if (user.data) {
+            store.commit("setUser", user.data);
+          } else {
+            const createUser = await self.$api.post(`/app/employee/${profile.userId}/${APP_ID}`,
+              profile
+            );
+            if (createUser.data) {
+              const user = await self.$api.get(`/app/employee/${profile.userId}/${APP_ID}`);
+              store.commit("setUser", user.data);
+            }
+          }
+        }
+        store.commit("setLoading", false);
+      }
+
     }
   },
   render: h => h(App),

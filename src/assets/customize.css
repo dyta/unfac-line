@@ -6,12 +6,6 @@
     color: #2c3e50;
 }
 
-.page {
-    display: flex;
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
-}
 
 .unauth {
     display: flex;
@@ -20,6 +14,14 @@
     align-items: center;
 }
 
+.content {
+    margin-top: 2rem;
+}
+
 .text-left {
     text-align: left
+}
+
+.ui.card {
+    width: 100%;
 }
