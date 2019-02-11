@@ -1,17 +1,24 @@
 /*eslint-disable */
-const express = require('express')
-const serveStatic = require('serve-static')
-const path = require('path')
+const express = require('express');
+const path = require('path');
+const history = require('connect-history-api-fallback');
 
-// create Express app
 const app = express();
 
-app.use(express.json());
+const staticFileMiddleware = express.static(path.join(__dirname + '/dist'));
 
-app.use(serveStatic(path.join(__dirname, 'dist')))
+app.use(staticFileMiddleware);
+app.use(history({
+    disableDotRule: true,
+    verbose: true
+}));
+app.use(staticFileMiddleware);
 
-// listen on port
-const port = process.env.PORT || 3000
-app.listen(port, () => {
-    console.log(`listening on ${port}`)
-})
+app.get('/', function (req, res) {
+    res.render(path.join(__dirname + '/dist/index.html'));
+});
+
+var server = app.listen(process.env.PORT || 8080, function () {
+    var port = server.address().port;
+    console.log("App now running on port", port);
+});
