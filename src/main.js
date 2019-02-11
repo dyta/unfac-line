@@ -29,5 +29,22 @@ Vue.prototype.$moment = moment;
 new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  created: async function () {
+    const APP_ID = this.$route.query.appid
+    const KEY = this.$route.query.key
+
+    if (APP_ID && KEY) {
+      store.commit("setAppId", APP_ID);
+      store.commit("setApiKey", KEY);
+    }
+
+    // 1. เช็ค appid หรือ key
+    // 2. state---appData
+    // 3. ตรวจสอบ user
+    //    3.1 สร้างหรืออัพเดท
+    //    3.2 state---user
+
+
+  },
 }).$mount('#app')
