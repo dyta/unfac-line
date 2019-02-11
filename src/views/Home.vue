@@ -195,9 +195,7 @@ export default {
         if (res.data.length > 0) {
           self.items = res.data;
         }
-        setTimeout(() => {
-          self.$store.commit("setLoading", false);
-        }, 2000);
+        self.$store.commit("setLoading", false);
       });
     }
   }

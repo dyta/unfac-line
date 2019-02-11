@@ -36,12 +36,10 @@ new Vue({
     const APP_ID = await self.$route.query.appid
     const KEY = await self.$route.query.key
 
-
-
     if (APP_ID && KEY) {
       setTimeout(() => {
         store.commit("setLoading", false);
-      }, 10 * 1000);
+      }, 30 * 1000);
 
       self.$liff.init(() => {
         self.$liff.getProfile().then(async profile => {
@@ -68,6 +66,8 @@ new Vue({
       })
 
 
+    } else {
+      store.commit("setLoading", false);
     }
   },
   render: h => h(App),
