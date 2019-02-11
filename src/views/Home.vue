@@ -1,7 +1,6 @@
 <template>
   <div class="page" v-if="verify">
     <sui-container text class="text-left content" v-if="!isLoading && items.length > 0">
-      {{items}}
       <sui-card v-for="(item, index) in items" :key="index">
         <sui-card-content>
           <sui-card-header>Ellidddot Fu</sui-card-header>
@@ -18,7 +17,7 @@
         </sui-button-group>
       </sui-card>
     </sui-container>
-    <sui-container class="content" v-else-if="items.length === 0 && !isLoading">
+    <sui-container class="content" v-else-if="items.length === 0 && isLoading">
       <sui-message warning class="text-left">
         <sui-message-header>ตอนนี้ยังไม่มีงานเลยนะจ๊ะ</sui-message-header>
         <sui-message-list>
@@ -35,7 +34,11 @@ export default {
   name: "home",
   data() {
     return {
-      items: []
+      items: [
+        {
+          test: 1
+        }
+      ]
     };
   },
   created() {
