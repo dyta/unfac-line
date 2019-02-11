@@ -27,10 +27,8 @@ Vue.use({
 Vue.prototype.$moment = moment;
 
 new Vue({
-
   router,
   store,
-  render: h => h(App),
   created: async function () {
 
     const self = this
@@ -40,6 +38,7 @@ new Vue({
     if (APP_ID && KEY) {
       self.$liff.init(async () => {
         await self.$liff.getProfile().then(async profile => {
+          console.log('profile: ', profile);
           store.commit("setAppId", APP_ID);
           store.commit("setApiKey", KEY);
           const appData = await self.$api.get(`/app/enterprise/${APP_ID}/${KEY}`);
@@ -63,4 +62,5 @@ new Vue({
       })
     }
   },
+  render: h => h(App),
 }).$mount('#app')
