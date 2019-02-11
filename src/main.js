@@ -31,19 +31,28 @@ new Vue({
   store,
   render: h => h(App),
   created: async function () {
+    // 1. เช็ค appid หรือ key
+    // 2. state---appData
+    // 3. ตรวจสอบ user
+    //    3.1 สร้างหรืออัพเดท
+    //    3.2 state---user
+    const self = this
     const APP_ID = this.$route.query.appid
     const KEY = this.$route.query.key
 
     if (APP_ID && KEY) {
       store.commit("setAppId", APP_ID);
       store.commit("setApiKey", KEY);
+      store.commit("setAppData", KEY);
+
+      this.$liff.init(async () => {
+        await this.$liff.getProfile().then(profile => {
+          store.commit("setUser", profile);
+        })
+      })
     }
 
-    // 1. เช็ค appid หรือ key
-    // 2. state---appData
-    // 3. ตรวจสอบ user
-    //    3.1 สร้างหรืออัพเดท
-    //    3.2 state---user
+
 
 
   },
