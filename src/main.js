@@ -27,33 +27,40 @@ Vue.use({
 Vue.prototype.$moment = moment;
 
 new Vue({
+
   router,
   store,
   render: h => h(App),
   created: async function () {
-    // 1. เช็ค appid หรือ key
-    // 2. state---appData
-    // 3. ตรวจสอบ user
-    //    3.1 สร้างหรืออัพเดท
-    //    3.2 state---user
+
     const self = this
-    const APP_ID = this.$route.query.appid
-    const KEY = this.$route.query.key
+    const APP_ID = await self.$route.query.appid
+    const KEY = await self.$route.query.key
 
     if (APP_ID && KEY) {
-      store.commit("setAppId", APP_ID);
-      store.commit("setApiKey", KEY);
-      store.commit("setAppData", KEY);
+      self.$liff.init(async () => {
+        await self.$liff.getProfile().then(async profile => {
+          store.commit("setAppId", APP_ID);
+          store.commit("setApiKey", KEY);
+          const appData = await self.$api.get(`/app/enterprise/${APP_ID}/${KEY}`);
+          if (appData) {
+            store.commit("setAppData", appData.data);
+            const user = await self.$api.get(`/app/employee/${profile.userId}/${APP_ID}`);
+            if (user.data) {
+              store.commit("setUser", user.data);
+            } else {
+              const createUser = await self.$api.post(`/app/employee/${profile.userId}/${APP_ID}`,
 
-      this.$liff.init(async () => {
-        await this.$liff.getProfile().then(profile => {
-          store.commit("setUser", profile);
+                profile
+              );
+              if (createUser.data) {
+                const user = await self.$api.get(`/app/employee/${profile.userId}/${APP_ID}`);
+                store.commit("setUser", user.data);
+              }
+            }
+          }
         })
       })
     }
-
-
-
-
   },
 }).$mount('#app')

@@ -5,14 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    appId: null,
+    app_Id: null,
     apiKey: null,
     appData: null,
     user: null
   },
   mutations: {
     setAppId(state, payload) {
-      state.appId = payload
+      state.app_Id = payload
     },
     setApiKey(state, payload) {
       state.apiKey = payload
