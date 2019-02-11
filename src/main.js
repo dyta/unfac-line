@@ -17,6 +17,7 @@ Vue.use(SuiVue);
 Vue.use(VueSweetalert2);
 moment.locale("th");
 Vue.prototype.$liff = window.liff;
+Vue.prototype.$moment = moment;
 Vue.use({
   install(Vue) {
     Vue.prototype.$api = axios.create({
