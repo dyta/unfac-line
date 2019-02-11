@@ -3,24 +3,23 @@
     <sui-dimmer :active="isLoading" inverted>
       <sui-loader content="Loading..."/>
     </sui-dimmer>
-    <div v-if="app_id && apiKey && appData && user">
+    <div v-if="app_id && apiKey && appData && user ">
       <sui-segment
         v-if="!isLoading"
         :loading="!appData.entName ? true : false"
-        padded
         emphasis="secondary"
         class="nav"
       >
         <h3>{{appData.entName}}</h3>
       </sui-segment>
-      <div class="pt-5">
+      <div class="pt-4">
         <router-view/>
       </div>
       <sui-segment class="no-radius" v-if="!isLoading">
         <p>&copy; 2019 Unfac.co</p>
       </sui-segment>
     </div>
-    <div class="unauth" v-else-if="!app_id || !apiKey || !appData || !user">
+    <div class="unauth" v-else-if="!app_id || !apiKey || !appData || !user || isLoading">
       <sui-container text v-if="!isLoading">
         <img src="./assets/logo.png" width="80">
         <h2 is="sui-header">Application failed</h2>

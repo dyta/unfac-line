@@ -35,6 +35,7 @@
                 is="sui-button"
                 :disabled="expired(item.workEndAt) || item.workStatus === 5"
                 :positive="!expired(item.workEndAt) && item.workStatus !== 5"
+                @click.native="toggle(item)"
                 content="ขอรับงาน"
               />
             </sui-button-group>
@@ -42,15 +43,51 @@
         </sui-item>
       </sui-item-group>
     </sui-container>
-    <sui-container class="content" v-else-if="items.length === 0 && isLoading">
+    <sui-container class="content" v-else-if="items.length === 0 && !isLoading">
       <sui-message warning class="text-left">
         <sui-message-header>ตอนนี้ยังไม่มีงานเลยนะจ๊ะ</sui-message-header>
         <sui-message-list>
           <sui-message-item>หากมีงานเข้ามาใหม่เราจะแจ้งเตือนให้คุณ {{user.empDisplayName}} ทราบเป็นคนแรก</sui-message-item>
         </sui-message-list>
       </sui-message>
-      <sui-button size="big" positive fluid @click="()=> $liff.closeWindow()">ออกจากระบบ</sui-button>
+      <sui-button size="big" negative fluid @click="()=> $liff.closeWindow()">ออกจากระบบ</sui-button>
     </sui-container>
+    <sui-modal v-model="open" animation="fly down" size="fullscreen">
+      <sui-modal-header class="no-radius" v-if="record">เลือกจำนวนที่ขอรับทำ</sui-modal-header>
+      <sui-modal-content v-if="record">
+        <sui-modal-description class="text-center">
+          <h3 class="pb-2">หมายเลขงาน #{{record.workId}}</h3>
+          <sui-grid :columns="3" divided>
+            <sui-grid-row>
+              <sui-grid-column>
+                <sui-button class="btn-request" basic @click="minusAmount">
+                  <sui-icon name="minus"/>
+                </sui-button>
+              </sui-grid-column>
+
+              <sui-grid-column>
+                <h1 class="get-choose">{{request.amount}}</h1>
+              </sui-grid-column>
+              <sui-grid-column>
+                <sui-button class="btn-request" basic @click="addAmount" :disabled="limitPlus">
+                  <sui-icon name="plus"/>
+                </sui-button>
+              </sui-grid-column>
+            </sui-grid-row>
+          </sui-grid>
+        </sui-modal-description>
+      </sui-modal-content>
+      <sui-modal-actions v-if="record" class="no-radius">
+        <sui-button
+          :disabled="!valid"
+          :positive="valid"
+          fluid
+          size="huge"
+          content="ส่งคำขอ"
+          class="ml-0"
+        />
+      </sui-modal-actions>
+    </sui-modal>
   </div>
 </template>
 
@@ -59,7 +96,12 @@ export default {
   name: "home",
   data() {
     return {
-      items: []
+      items: [],
+      open: false,
+      record: null,
+      request: {
+        amount: 0
+      }
     };
   },
   created() {
@@ -83,9 +125,41 @@ export default {
     },
     isLoading() {
       return this.$store.state.isLoading;
+    },
+    valid() {
+      return (
+        this.request.amount !== 0 &&
+        this.request.amount <= 5 &&
+        this.request.amount <= this.record.workVolume - this.record.approved
+      );
+    },
+    limitPlus() {
+      return (
+        this.request.amount >= this.record.workVolume - this.record.approved
+      );
     }
   },
   methods: {
+    addAmount() {
+      if (this.record) {
+        return this.request.amount <
+          this.record.workVolume - this.record.approved &&
+          this.request.amount < 5 // limit แต่ละ user
+          ? this.request.amount++
+          : false;
+      }
+    },
+    minusAmount() {
+      return this.request.amount !== 0 ? this.request.amount-- : false;
+    },
+    async toggle(record) {
+      if (record) {
+        this.request.amount = 0;
+        this.record = await record;
+      }
+
+      this.open = !this.open;
+    },
     status(c) {
       let set = {
         text: "",
@@ -146,5 +220,16 @@ export default {
 .ui.disabled.input,
 .ui.input:not(.disabled) input[disabled] {
   opacity: 1 !important;
+}
+.ui.modal > .content {
+  margin-top: 0;
+}
+.btn-request {
+  height: 100%;
+  width: 100%;
+  text-align: center;
+}
+.ui.button:not(.icon) > .icon:not(.button):not(.dropdown) {
+  margin: 0 !important;
 }
 </style>

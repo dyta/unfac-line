@@ -22,6 +22,10 @@
     text-align: left
 }
 
+.text-center {
+    text-align: center
+}
+
 .ui.items:not(.unstackable)>.item {
     flex-direction: inherit !important;
 }
@@ -54,9 +58,20 @@
 
 }
 
+.get-choose {
+    font-size: 4em;
+}
+
 small.stay,
 small.price {
     font-size: 12px;
+}
+
+.ui.fullscreen.modal {
+    width: 100% !important;
+    left: 0 !important;
+    margin: 0;
+
 }
 
 .no-radius {
@@ -81,4 +96,28 @@ small.price {
 
 .pt-1 {
     padding-top: 1rem;
+}
+
+.pb-5 {
+    padding-bottom: 5rem;
+}
+
+.pb-4 {
+    padding-bottom: 4rem;
+}
+
+.pb-3 {
+    padding-bottom: 3rem;
+}
+
+.pb-2 {
+    padding-bottom: 2rem;
+}
+
+.pb-1 {
+    padding-bottom: 1rem;
+}
+
+.ml-0 {
+    margin-left: 0 !important;
 }
