@@ -8,7 +8,8 @@ export default new Vuex.Store({
     app_Id: null,
     apiKey: null,
     appData: null,
-    user: null
+    user: null,
+    isLoading: true
   },
   mutations: {
     setAppId(state, payload) {
@@ -22,6 +23,9 @@ export default new Vuex.Store({
     },
     setUser(state, payload) {
       state.user = payload
+    },
+    setLoading(state, payload) {
+      state.isLoading = payload
     },
   },
   actions: {

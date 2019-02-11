@@ -30,15 +30,24 @@ new Vue({
   router,
   store,
   created: async function () {
-
+    /* eslint-disable */
     const self = this
     const APP_ID = await self.$route.query.appid
     const KEY = await self.$route.query.key
 
+    let profile = {
+      userId: "U983b8d629402fc43cd62e951978d6032",
+      displayName: ".ta",
+      pictureUrl: "https://i.stack.imgur.com/lcRsd.gif?s=32&g=1"
+    };
+
     if (APP_ID && KEY) {
-      self.$liff.init(async () => {
-        await self.$liff.getProfile().then(async profile => {
-          console.log('profile: ', profile);
+      setTimeout(() => {
+        store.commit("setLoading", false);
+      }, 10 * 1000);
+
+      self.$liff.init(() => {
+        self.$liff.getProfile().then(async profile => {
           store.commit("setAppId", APP_ID);
           store.commit("setApiKey", KEY);
           const appData = await self.$api.get(`/app/enterprise/${APP_ID}/${KEY}`);
@@ -49,7 +58,6 @@ new Vue({
               store.commit("setUser", user.data);
             } else {
               const createUser = await self.$api.post(`/app/employee/${profile.userId}/${APP_ID}`,
-
                 profile
               );
               if (createUser.data) {
@@ -58,6 +66,7 @@ new Vue({
               }
             }
           }
+          store.commit("setLoading", false);
         })
       })
     }

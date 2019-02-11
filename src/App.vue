@@ -4,7 +4,10 @@
       <router-view/>
     </div>
     <div class="unauth" v-else-if="!app_id || !apiKey || !appData || !user">
-      <sui-container text>
+      <sui-dimmer :active="isLoading" inverted>
+        <sui-loader content="Loading..."/>
+      </sui-dimmer>
+      <sui-container text v-if="!isLoading">
         <img src="./assets/logo.png" width="80">
         <h2 is="sui-header">Application failed</h2>
         <code>การเข้าถึงแอปพลิเคชันถูกปฏิเสธ</code>
@@ -28,6 +31,9 @@ export default {
     },
     user() {
       return this.$store.state.user;
+    },
+    isLoading() {
+      return this.$store.state.isLoading;
     }
   }
 };
