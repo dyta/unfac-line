@@ -69,7 +69,7 @@
                 <h1 class="get-choose">{{request.amount}}</h1>
               </sui-grid-column>
               <sui-grid-column>
-                <sui-button class="btn-request" basic @click="addAmount" :disabled="limitPlus">
+                <sui-button class="btn-request" basic @click="addAmount">
                   <sui-icon name="plus"/>
                 </sui-button>
               </sui-grid-column>
@@ -128,11 +128,6 @@ export default {
         this.request.amount !== 0 &&
         this.request.amount <= 5 &&
         this.request.amount <= this.record.workVolume - this.record.approved
-      );
-    },
-    limitPlus() {
-      return (
-        this.request.amount >= this.record.workVolume - this.record.approved
       );
     }
   },
