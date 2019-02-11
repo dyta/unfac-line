@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="verify">
+  <div class="page" v-if="user.userAuth">
     <sui-container text class="text-left content" v-if="!isLoading && items.length > 0">
       <sui-item-group divided>
         <sui-item v-for="(item, index) in items" :key="index">
@@ -119,9 +119,6 @@ export default {
     },
     user() {
       return this.$store.state.user;
-    },
-    verify() {
-      return Boolean(this.$store.state.user.userAuth);
     },
     isLoading() {
       return this.$store.state.isLoading;
