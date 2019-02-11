@@ -43,7 +43,7 @@ new Vue({
         store.commit("setLoading", false);
       }, 10 * 1000);
       if (process.env.NODE_ENV === 'production') {
-        self.$liff.init((successCallback, errorCallback) => {
+        self.$liff.init(() => {
           self.$liff.getProfile().then(async profile => {
             store.commit("setAppId", APP_ID);
             store.commit("setApiKey", KEY);
