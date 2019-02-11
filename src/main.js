@@ -42,7 +42,7 @@ new Vue({
       setTimeout(() => {
         store.commit("setLoading", false);
       }, 10 * 1000);
-      if (!webpackHotUpdate) {
+      if (process.env.NODE_ENV === 'production') {
         self.$liff.init((successCallback, errorCallback) => {
           self.$liff.getProfile().then(async profile => {
             store.commit("setAppId", APP_ID);
