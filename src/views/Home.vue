@@ -225,7 +225,7 @@ export default {
         `/app/request/${self.app_Id}/${self.apiKey}`,
         request
       );
-      console.log("CreateRequest: ", CreateRequest);
+
       if (CreateRequest) {
         self.onClickLoading = false;
         self.open = false;

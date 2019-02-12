@@ -4,15 +4,7 @@
       <sui-loader indeterminate content="Loading..."/>
     </sui-dimmer>
     <div v-if="app_id && apiKey && appData && user ">
-      <sui-segment
-        v-if="!isLoading"
-        :loading="!appData.entName ? true : false"
-        emphasis="secondary"
-        class="nav"
-      >
-        <h3>{{appData.entName}}</h3>
-      </sui-segment>
-      <div class="pt-4">
+      <div>
         <router-view/>
       </div>
       <sui-segment class="no-radius" v-if="!isLoading">
