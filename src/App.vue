@@ -7,9 +7,6 @@
       <div>
         <router-view/>
       </div>
-      <sui-segment class="no-radius" v-if="!isLoading">
-        <p>&copy; 2019 Unfac.co</p>
-      </sui-segment>
     </div>
     <div
       class="unauth"

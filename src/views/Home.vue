@@ -1,48 +1,54 @@
 <template>
-  <div class="page">
-    <sui-container text class="text-left content" v-if="!isLoading && items.length > 0">
-      <sui-item-group divided>
-        <sui-item v-for="(item, index) in items" :key="index">
-          <sui-item-image size="small" wrapped :src="item.workImages"/>
-          <sui-item-content>
-            <sui-item-header>
-              <sui-input transparent :value="item.workName" disabled icon-position="left"/>
-            </sui-item-header>
-            <sui-item-meta>
-              <small class="price">
-                <sui-label :color="status(item.workStatus).color" circular empty horizontal/>
-                <b>{{status(item.workStatus).text}}</b>
-                -
-                ค่าจ้าง: {{item.workEarn}} บาท ({{item.workEarnType === 1 ? 'ต่อชิ้น': 'เหมา' }})
-              </small>
-              <br>
-              <small class="stay">
-                <b>เวลาปิดรับงาน: {{$moment(item.workEndAt).subtract(2 ,'days').fromNow()}}</b>
-              </small>
-            </sui-item-meta>
-            <sui-item-description>
-              <sui-progress
-                :percent="percent(item.approvedSum, item.workVolume)"
-                state="active"
-                indicating
-                size="tiny"
-                :label="`อนุมัติแล้ว ${item.approvedSum ? item.approvedSum : 0}/${item.workVolume}`"
-              />
-            </sui-item-description>
-            <sui-button-group attached="bottom" class="pt-1">
-              <sui-button content="รายละเอียด" circular/>
-              <sui-button
-                circular
-                :disabled="expired(item.workEndAt) || item.workStatus === 5 || item.approvedSum === item.workVolume"
-                :positive="!expired(item.workEndAt) && item.workStatus !== 5 && item.approvedSum !== item.workVolume"
-                @click.native="toggle(item)"
-                content="ขอรับงาน"
-              />
-            </sui-button-group>
-          </sui-item-content>
-        </sui-item>
-      </sui-item-group>
-    </sui-container>
+  <div>
+    <scroller
+      :on-refresh="refresh"
+      v-if="!isLoading && items.length > 0"
+      refreshText="เลื่อนลงเพื่อรีเฟรช"
+    >
+      <sui-container text class="text-left content">
+        <sui-item-group divided>
+          <sui-item v-for="(item, index) in items" :key="index">
+            <sui-item-image size="small" wrapped :src="item.workImages"/>
+            <sui-item-content>
+              <sui-item-header>
+                <sui-input transparent :value="item.workName" disabled icon-position="left"/>
+              </sui-item-header>
+              <sui-item-meta>
+                <small class="price">
+                  <sui-label :color="status(item.workStatus).color" circular empty horizontal/>
+                  <b>{{status(item.workStatus).text}}</b>
+                  -
+                  ค่าจ้าง: {{item.workEarn}} บาท ({{item.workEarnType === 1 ? 'ต่อชิ้น': 'เหมา' }})
+                </small>
+                <br>
+                <small class="stay">
+                  <b>เวลาปิดรับงาน: {{$moment(item.workEndAt).subtract(2 ,'days').fromNow()}}</b>
+                </small>
+              </sui-item-meta>
+              <sui-item-description>
+                <sui-progress
+                  :percent="percent(item.approvedSum, item.workVolume)"
+                  state="active"
+                  indicating
+                  size="tiny"
+                  :label="`อนุมัติแล้ว ${item.approvedSum ? item.approvedSum : 0}/${item.workVolume}`"
+                />
+              </sui-item-description>
+              <sui-button-group attached="bottom" class="pt-1">
+                <sui-button content="รายละเอียด" circular/>
+                <sui-button
+                  circular
+                  :disabled="expired(item.workEndAt) || item.workStatus === 5 || item.approvedSum === item.workVolume"
+                  :positive="!expired(item.workEndAt) && item.workStatus !== 5 && item.approvedSum !== item.workVolume"
+                  @click.native="toggle(item)"
+                  content="ขอรับงาน"
+                />
+              </sui-button-group>
+            </sui-item-content>
+          </sui-item>
+        </sui-item-group>
+      </sui-container>
+    </scroller>
     <sui-container class="content" v-else-if="items.length === 0 && !isLoading">
       <sui-message warning class="text-left">
         <sui-message-header>ตอนนี้ยังไม่มีงานเลยนะจ๊ะ</sui-message-header>
@@ -100,8 +106,10 @@
 
 <script>
 /* eslint-disable */
+
 export default {
   name: "home",
+
   data() {
     return {
       items: [],
@@ -110,10 +118,21 @@ export default {
       onClickLoading: false,
       request: {
         amount: 0
+      },
+      TOP_DEFAULT_CONFIG: {
+        pullText: "ลากลงเพื่อรีเฟรชข้อมูล", // The text is displayed when you pull down
+        triggerText: "释放更新", // The text that appears when the trigger distance is pulled down
+        loadingText: "กำลังโหลด...", // The text in the load
+        doneText: "รีเฟรชแล้ว", // Load the finished text
+        failText: "รีเฟรชล้มเหลว", // Load failed text
+        loadedStayTime: 400, // Time to stay after loading ms
+        stayDistance: 50, // Trigger the distance after the refresh
+        triggerDistance: 50 // Pull down the trigger to trigger the distance
       }
     };
   },
   created() {
+    this.$store.commit("setLoading", true);
     this.fetch();
   },
   computed: {
@@ -197,14 +216,24 @@ export default {
     expired(time) {
       return this.$moment() > this.$moment(time).subtract(2, "days");
     },
-    async fetch() {
+
+    fetch() {
       let self = this;
-      this.$store.commit("setLoading", true);
-      await this.$api.get(`/app/work/${this.user.entId}`).then(function(res) {
-        if (res.data.length > 0) {
-          self.items = res.data;
-        }
-        self.$store.commit("setLoading", false);
+      return new Promise(function(resolve, reject) {
+        self.$api.get(`/app/work/${self.user.entId}`).then(function(res) {
+          if (res.data.length > 0) {
+            self.items = res.data;
+            resolve(res.data);
+          } else {
+            reject();
+          }
+          self.$store.commit("setLoading", false);
+        });
+      });
+    },
+    refresh(done) {
+      this.fetch().then(function() {
+        done();
       });
     },
     async onClickRequestWork() {
