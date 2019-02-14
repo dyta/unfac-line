@@ -9,7 +9,8 @@ export default new Vuex.Store({
     apiKey: null,
     appData: null,
     user: null,
-    isLoading: true
+    isLoading: true,
+    passingLiff: false
   },
   mutations: {
     setAppId(state, payload) {
@@ -17,6 +18,9 @@ export default new Vuex.Store({
     },
     setApiKey(state, payload) {
       state.apiKey = payload
+    },
+    setLiff(state, payload) {
+      state.passingLiff = payload
     },
     setAppData(state, payload) {
       state.appData = payload

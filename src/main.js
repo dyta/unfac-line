@@ -50,6 +50,7 @@ new Vue({
             store.commit("setAppData", appData.data);
             const user = await self.$api.get(`/app/employee/${profile.userId}/${APP_ID}`);
             if (user.data) {
+              store.commit('setLiff', true)
               store.commit("setUser", user.data);
             } else {
               const createUser = await self.$api.post(`/app/employee/${profile.userId}/${APP_ID}`,

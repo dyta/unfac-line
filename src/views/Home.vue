@@ -1,5 +1,5 @@
 <template>
-  <div class="page" v-if="user.userAuth">
+  <div class="page">
     <sui-container text class="text-left content" v-if="!isLoading && items.length > 0">
       <sui-item-group divided>
         <sui-item v-for="(item, index) in items" :key="index">
@@ -33,8 +33,8 @@
               <sui-button content="รายละเอียด" circular/>
               <sui-button
                 circular
-                :disabled="expired(item.workEndAt) || item.workStatus === 5"
-                :positive="!expired(item.workEndAt) && item.workStatus !== 5"
+                :disabled="expired(item.workEndAt) || item.workStatus === 5 || item.approvedSum === item.workVolume"
+                :positive="!expired(item.workEndAt) && item.workStatus !== 5 && item.approvedSum !== item.workVolume"
                 @click.native="toggle(item)"
                 content="ขอรับงาน"
               />
@@ -50,7 +50,7 @@
           <sui-message-item>หากมีงานเข้ามาใหม่เราจะแจ้งเตือนให้คุณ {{user.empDisplayName}} ทราบเป็นคนแรก</sui-message-item>
         </sui-message-list>
       </sui-message>
-      <sui-button size="big" circular negative fluid @click="()=> $liff.closeWindow()">ออกจากระบบ</sui-button>
+      <sui-button size="big" circular negative fluid @click="()=> $liff.closeWindow()">ปิดหน้าต่าง</sui-button>
     </sui-container>
     <sui-modal v-model="open" :closable="!onClickLoading" animation="fly down" size="mini">
       <sui-modal-header class="no-radius" v-if="record">เลือกจำนวนที่ขอรับทำ</sui-modal-header>
