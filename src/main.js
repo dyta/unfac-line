@@ -48,7 +48,7 @@ new Vue({
           store.commit("setAppId", APP_ID);
           store.commit("setApiKey", KEY);
           const appData = await self.$api.get(`/app/enterprise/${APP_ID}/${KEY}`);
-          if (appData) {
+          if (appData.data) {
             store.commit("setAppData", appData.data);
             const user = await self.$api.get(`/app/employee/${profile.userId}/${APP_ID}`);
             if (user.data) {
@@ -64,6 +64,7 @@ new Vue({
               }
             }
           }
+
           store.commit("setLoading", false);
         })
       })
