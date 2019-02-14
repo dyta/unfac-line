@@ -8,6 +8,7 @@
         <router-view/>
       </div>
     </div>
+
     <div
       class="unauth"
       v-else-if="!app_id || !apiKey || !appData || !user || isLoading || user.userAuth == 0"

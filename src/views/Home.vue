@@ -49,6 +49,7 @@
         </sui-item-group>
       </sui-container>
     </scroller>
+
     <sui-container class="content" v-else-if="items.length === 0 && !isLoading">
       <sui-message warning class="text-left">
         <sui-message-header>ตอนนี้ยังไม่มีงานเลยนะจ๊ะ</sui-message-header>
@@ -101,6 +102,9 @@
         />
       </sui-modal-actions>
     </sui-modal>
+    <div class="footer">
+      <p>&copy; 2019 Unfac.co</p>
+    </div>
   </div>
 </template>
 
@@ -284,5 +288,13 @@ export default {
 }
 .ui.button:not(.icon) > .icon:not(.button):not(.dropdown) {
   margin: 0 !important;
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 4px 0;
+  background: #e4e4e4;
+  font-size: 10px;
 }
 </style>
