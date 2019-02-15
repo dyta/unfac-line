@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from '../views/Home.vue'
 import Account from '../views/Account.vue'
 import History from '../views/history.vue'
+import Wallet from '../views/Wallet.vue'
 
 
 Vue.use(Router)
@@ -18,6 +19,10 @@ export default new Router({
       path: '/account',
       name: 'account',
       component: Account
+    }, {
+      path: '/wallet',
+      name: 'wallet',
+      component: Wallet
     },
     {
       path: '/history',
