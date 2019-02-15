@@ -47,6 +47,7 @@
                   :positive="item.mfProgress !== item.maxVolume"
                   @click.native="toggle(item)"
                   content="ส่งอัพเดทความคืบหน้า"
+                  :loading="onClickLoading"
                 />
               </sui-button-group>
             </sui-item-content>
@@ -246,6 +247,7 @@ export default {
             } else {
               reject();
             }
+            self.onClickLoading = false;
             self.$store.commit("setLoading", false);
           });
       });
@@ -270,7 +272,6 @@ export default {
       );
 
       if (UpdateProgress) {
-        self.onClickLoading = false;
         self.open = false;
         self.fetch();
       }
