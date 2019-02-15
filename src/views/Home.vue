@@ -22,7 +22,7 @@
                 </small>
                 <br>
                 <small class="stay">
-                  <b>เวลาปิดรับงาน: {{$moment(item.workEndAt).subtract(2 ,'days').fromNow()}}</b>
+                  <b>เวลาปิดรับงาน: {{$moment(item.workStartAt).add(2 ,'days').fromNow()}}</b>
                 </small>
               </sui-item-meta>
               <sui-item-description>
@@ -49,21 +49,40 @@
         </sui-item-group>
       </sui-container>
     </scroller>
-
-    <sui-container class="content" v-else-if="items.length === 0 && !isLoading">
-      <sui-message warning class="text-left">
-        <sui-message-header>ตอนนี้ยังไม่มีงานเลยนะจ๊ะ</sui-message-header>
-        <sui-message-list>
-          <sui-message-item>หากมีงานเข้ามาใหม่เราจะแจ้งเตือนให้คุณ {{user.empDisplayName}} ทราบเป็นคนแรก</sui-message-item>
-        </sui-message-list>
-      </sui-message>
-      <sui-button size="big" circular negative fluid @click="()=> $liff.closeWindow()">ปิดหน้าต่าง</sui-button>
-    </sui-container>
+    <scroller
+      :on-refresh="refresh"
+      v-else-if="items.length === 0 && !isLoading"
+      refreshText="เลื่อนลงเพื่อรีเฟรช"
+    >
+      <sui-container class="content">
+        <sui-message warning class="text-center">
+          <sui-message-header>ยังไม่มีงานตอนนี้</sui-message-header>
+        </sui-message>
+        <sui-button size="large" circular basic fluid @click="()=> $liff.closeWindow()">ปิดหน้าต่าง</sui-button>
+      </sui-container>
+    </scroller>
     <sui-modal v-model="open" :closable="!onClickLoading" animation="fly down" size="mini">
       <sui-modal-header class="no-radius" v-if="record">เลือกจำนวนที่ขอรับทำ</sui-modal-header>
       <sui-modal-content v-if="record">
         <sui-modal-description class="text-center">
-          <h3 class="pb-2">หมายเลขงาน #{{record.workId}}</h3>
+          <h3>หมายเลขงาน #{{record.workId}}</h3>
+          <ul class="text-left">
+            <li>
+              <b>รับงานนี้ได้จนถึง:</b>
+              {{$moment(record.workStartAt).add(2 ,'days').format('DD MMM YYYY')}}
+              ({{$moment(record.workStartAt).add(2 ,'days').fromNow()}})
+            </li>
+            <li>
+              <b>Brief งาน วันที่:</b>
+              {{$moment(record.workStartAt).add(2 ,'days').format('DD MMM YYYY')}}
+              ({{$moment(record.workStartAt).add(2 ,'days').fromNow()}})
+            </li>
+            <li>
+              <b>ปิดงานภายใน:</b>
+              {{$moment(record.workEndAt).subtract(2 ,'days').format('DD MMM YYYY')}}
+              ({{$moment(record.workEndAt).subtract(2 ,'days').fromNow()}})
+            </li>
+          </ul>
           <sui-grid :columns="3" divided>
             <sui-grid-row>
               <sui-grid-column>
@@ -122,16 +141,6 @@ export default {
       onClickLoading: false,
       request: {
         amount: 0
-      },
-      TOP_DEFAULT_CONFIG: {
-        pullText: "ลากลงเพื่อรีเฟรชข้อมูล", // The text is displayed when you pull down
-        triggerText: "释放更新", // The text that appears when the trigger distance is pulled down
-        loadingText: "กำลังโหลด...", // The text in the load
-        doneText: "รีเฟรชแล้ว", // Load the finished text
-        failText: "รีเฟรชล้มเหลว", // Load failed text
-        loadedStayTime: 400, // Time to stay after loading ms
-        stayDistance: 50, // Trigger the distance after the refresh
-        triggerDistance: 50 // Pull down the trigger to trigger the distance
       }
     };
   },
@@ -174,11 +183,11 @@ export default {
       }
     },
     minusAmount() {
-      return this.request.amount !== 0 ? this.request.amount-- : false;
+      return this.request.amount > 1 ? this.request.amount-- : false;
     },
     async toggle(record) {
       if (record) {
-        this.request.amount = 0;
+        this.request.amount = 1;
         this.record = await record;
       }
 
