@@ -17,16 +17,12 @@
         <img src="./assets/logo.png" width="80">
 
         <div v-if="liff">
-          <h2 is="sui-header">Access Denied</h2>
-          <p>การเข้าถึงแอปพลิเคชันถูกปฏิเสธ:</p>
-          <ul>
-            <li>
-              <small>ผู้ใช้ {{user.empDisplayName}} อยู่ระหว่างการตรวจสอบข้อมูล</small>
-            </li>
-            <li>
-              <small>การเข้าถึงแอปพลิเคชันระบุที่มาไม่ถูกต้อง</small>
-            </li>
-          </ul>
+          <h2 is="sui-header">อยู่ระหว่างการตรวจสอบข้อมูล</h2>
+          <p>
+            ผู้ใช้
+            <b>{{user.empDisplayName}}</b>
+            อยู่ระหว่างการตรวจสอบข้อมูล
+          </p>
           <sui-button
             size="large"
             circular

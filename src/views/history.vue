@@ -245,7 +245,7 @@ export default {
               self.items = res.data;
               resolve(res.data);
             } else {
-              reject();
+              resolve();
             }
             self.onClickLoading = false;
             self.$store.commit("setLoading", false);
