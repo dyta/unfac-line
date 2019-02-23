@@ -13,7 +13,7 @@
     <div v-else>
       <div v-if="!isLoading && user && user.empStatus === 1" class="pt-2 pb-5">
         <sui-container text>
-          <img :src="user.empPictureUrl" width="80">
+          <sui-image :src="user.empPictureUrl" width="80" size="tiny" circular centered/>
 
           <h2 is="sui-header">กรอกข้อมูลพนักงาน</h2>
           <sui-divider/>
@@ -188,6 +188,7 @@ export default {
       this.open = !this.open;
       this.employee.empAddress2 = "";
       this.zipcode = "";
+      this.district = "";
     },
     select(address) {
       this.employee.empAddress2 =
