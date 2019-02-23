@@ -144,10 +144,10 @@ export default {
     return {
       open: false,
       employee: {
-        empIdentity: "1520600078080",
-        empFullname: "Nattawut Kitiwan ",
-        empPhoneNumber: "0957192597",
-        empAddress: "120/784",
+        empIdentity: "",
+        empFullname: "",
+        empPhoneNumber: "",
+        empAddress: "",
         empAddress2: "",
         empStatus: 2
       },

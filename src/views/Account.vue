@@ -27,6 +27,7 @@
           :disabled="!hasIdentity || !hasName || !hasTel || !hasAddress || !hasCountry"
           fluid
           size="big"
+          @click="onCLickUpdateProfile"
           content="แก้ไขข้อมูล"
           class="pt-3"
         />
@@ -133,7 +134,21 @@ export default {
       this.zipcode = address.zipcode;
       this.open = !this.open;
     },
-    onCLickUpdateProfile() {}
+    onCLickUpdateProfile() {
+      let self = this;
+      return new Promise(function(resolve, reject) {
+        self.$api
+          .put(`/app/employee/${self.user.empId}`, self.employee)
+          .then(function(res) {
+            if (res.data) {
+              resolve(self.$router.go("/"));
+            } else {
+              reject(alert(res.data));
+            }
+            self.$store.commit("setLoading", false);
+          });
+      });
+    }
   }
 };
 </script>
