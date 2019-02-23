@@ -73,7 +73,10 @@
           </sui-modal>
         </sui-container>
       </div>
-      <div class="unauth" v-else-if="!isLoading && user && user.empStatus === 2">
+      <div
+        class="unauth"
+        v-else-if="!isLoading && user && user.empStatus === 2 && user.userAuth === 0"
+      >
         <sui-container text>
           <img src="./assets/logo.png" width="80">
           <h2 is="sui-header">อยู่ระหว่างการตรวจสอบข้อมูล</h2>
@@ -169,7 +172,7 @@ export default {
       return this.$store.state.appData;
     },
     user() {
-      return;
+      return this.$store.state.user;
     },
     liff() {
       return this.$store.state.passingLiff;
