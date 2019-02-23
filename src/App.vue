@@ -229,7 +229,7 @@ export default {
           .put(`/app/employee/${self.user.empLineId}/${self.user.entId}`, data)
           .then(function(res) {
             if (res) {
-              self.store.commit("setUser", res.data);
+              self.$store.commit("setUser", res.data);
               resolve(self.$store.commit("setLoading", false));
             } else {
               reject();
