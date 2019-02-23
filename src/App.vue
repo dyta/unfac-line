@@ -223,16 +223,18 @@ export default {
         empStatus: 2,
         empImage: self.user.empPictureUrl
       };
+      this.$store.commit("setLoading", true);
       return new Promise(function(resolve, reject) {
         self.$api
           .put(`/app/employee/${self.user.empId}/${self.user.entId}`, data)
           .then(function(res) {
             if (res) {
-              resolve(self.$router.go("/"));
+              self.$store.commit("setLoading", true);
+              self.$router.go("/");
+              resolve();
             } else {
               reject();
             }
-            self.$store.commit("setLoading", false);
           });
       });
     }
