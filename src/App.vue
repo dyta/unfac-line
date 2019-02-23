@@ -151,11 +151,7 @@ export default {
         empFullname: "",
         empPhoneNumber: "",
         empAddress: "",
-        empAddress2: "",
-        empStatus: 2,
-        empImage: this.$store.state.user
-          ? this.$store.state.user.empPictureUrl
-          : null
+        empAddress2: ""
       },
       district: "",
       zipcode: ""
@@ -218,17 +214,23 @@ export default {
     },
     onCLickUpdateProfile() {
       let self = this;
+      let data = {
+        empIdentity: self.employee.empIdentity,
+        empFullname: self.employee.empFullname,
+        empPhoneNumber: self.employee.empPhoneNumber,
+        empAddress: self.employee.empAddress,
+        empAddress2: self.employee.empAddress2,
+        empStatus: 2,
+        empImage: self.user.empPictureUrl
+      };
       return new Promise(function(resolve, reject) {
         self.$api
-          .put(
-            `/app/employee/${self.user.empId}/${self.user.entId}`,
-            self.employee
-          )
+          .put(`/app/employee/${self.user.empId}/${self.user.entId}`, data)
           .then(function(res) {
-            if (res.data) {
+            if (res) {
               resolve(self.$router.go("/"));
             } else {
-              reject(alert(res.data));
+              reject();
             }
             self.$store.commit("setLoading", false);
           });
