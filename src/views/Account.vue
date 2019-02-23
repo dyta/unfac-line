@@ -138,7 +138,10 @@ export default {
       let self = this;
       return new Promise(function(resolve, reject) {
         self.$api
-          .put(`/app/employee/${self.user.empId}`, self.employee)
+          .put(
+            `/app/employee/${self.user.empId}/${self.user.entId}`,
+            self.employee
+          )
           .then(function(res) {
             if (res.data) {
               resolve(self.$router.go("/"));

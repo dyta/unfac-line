@@ -149,7 +149,10 @@ export default {
         empPhoneNumber: "",
         empAddress: "",
         empAddress2: "",
-        empStatus: 2
+        empStatus: 2,
+        empImage: this.$store.state.user
+          ? this.$store.state.user.empPictureUrl
+          : null
       },
       district: "",
       zipcode: ""
@@ -166,7 +169,7 @@ export default {
       return this.$store.state.appData;
     },
     user() {
-      return this.$store.state.user;
+      return;
     },
     liff() {
       return this.$store.state.passingLiff;
@@ -214,7 +217,10 @@ export default {
       let self = this;
       return new Promise(function(resolve, reject) {
         self.$api
-          .put(`/app/employee/${self.user.empId}`, self.employee)
+          .put(
+            `/app/employee/${self.user.empId}/${self.user.entId}`,
+            self.employee
+          )
           .then(function(res) {
             if (res.data) {
               resolve(self.$router.go("/"));
