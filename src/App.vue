@@ -226,14 +226,10 @@ export default {
       this.$store.commit("setLoading", true);
       return new Promise(function(resolve, reject) {
         self.$api
-          .put(`/app/employee/${self.user.empId}/${self.user.entId}`, data)
+          .put(`/app/employee/${self.user.empLineId}/${self.user.entId}`, data)
           .then(function(res) {
             if (res) {
-              self.$router.go(
-                `/?appid=${self.$store.state.appData.entId}&key=${
-                  self.$store.state.apiKey
-                }`
-              );
+              self.store.commit("setUser", res.data);
               resolve(self.$store.commit("setLoading", false));
             } else {
               reject();

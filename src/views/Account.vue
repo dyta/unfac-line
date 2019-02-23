@@ -139,7 +139,7 @@ export default {
       return new Promise(function(resolve, reject) {
         self.$api
           .put(
-            `/app/employee/${self.user.empId}/${self.user.entId}`,
+            `/app/employee/${self.user.empLineId}/${self.user.entId}`,
             self.employee
           )
           .then(function(res) {
