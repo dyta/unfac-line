@@ -11,20 +11,65 @@
       </div>
     </div>
     <div v-else>
-      <div v-if="!isLoading && user && user.empStatus === 1" class="pt-5">
+      <div v-if="!isLoading && user && user.empStatus === 1" class="pt-2 pb-5">
         <sui-container text>
-          <img src="./assets/logo.png" width="80">
+          <img :src="user.empPictureUrl" width="80">
+
           <h2 is="sui-header">กรอกข้อมูลพนักงาน</h2>
-          <label>เลขบัตรประชาชน</label>
-          <sui-input placeholder="0-0000-00000-00-0"/>
-          <label>ชื่อ</label>
-          <sui-input/>
-          <label>นามสกุล</label>
-          <sui-input/>
+          <sui-divider/>
+          <label style="padding-top: 0">เลขบัตรประจำตัวประชาชน</label>
+          <sui-input
+            :error="!hasIdentity"
+            placeholder="เลข 13 หลักไม่มีขีด"
+            v-model="employee.empIdentity"
+          />
+          <label>ชื่อ-นามสกุล</label>
+          <sui-input :error="!hasName" placeholder="ณรงค์ ดีใจ" v-model="employee.empFullname"/>
           <label>เบอร์โทร</label>
-          <sui-input placeholder="0987654321"/>
+          <sui-input :error="!hasTel" placeholder="0987654321" v-model="employee.empPhoneNumber"/>
           <label>ที่อยู่</label>
-          <sui-input placeholder="เลขที่ อาคาร หมู่ ถนน"/>
+          <sui-input
+            :error="!hasAddress"
+            placeholder="เลขที่ อาคาร หมู่ ถนน"
+            v-model="employee.empAddress"
+          />
+          <sui-input class="pt-1" disabled v-model="employee.empAddress2"/>
+          <label>พื้นที่</label>
+          <sui-button @click.native="toggle" fluid size="large">เลือกพื้นที่</sui-button>
+          <br>
+          <sui-button
+            :positive="hasIdentity && hasName && hasTel && hasAddress && hasCountry"
+            :disabled="!hasIdentity || !hasName || !hasTel || !hasAddress || !hasCountry"
+            fluid
+            size="big"
+            content="ยืนยัน"
+            class="pt-3"
+          />
+          <sui-modal v-model="open">
+            <sui-modal-content>
+              <sui-modal-description>
+                <ThailandAutoComplete
+                  v-model="district"
+                  type="district"
+                  @select="select"
+                  label="ตำบล"
+                  color="#42b883"
+                  size="medium"
+                  placeholder="ตำบล"
+                />
+                <ThailandAutoComplete
+                  v-model="zipcode"
+                  type="zipcode"
+                  @select="select"
+                  label="รหัสไปรษณีย์"
+                  size="medium"
+                  color="#00a4e4"
+                  placeholder="รหัสไปรษณีย์"
+                  class="mb-4"
+                />
+              </sui-modal-description>
+            </sui-modal-content>
+          </sui-modal>
         </sui-container>
       </div>
       <div class="unauth" v-else-if="!isLoading && user && user.empStatus === 2">
@@ -81,11 +126,28 @@
         </sui-container>
       </div>
     </div>
+    <div class="footer">
+      <p>&copy; 2019 Unfac.co</p>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      open: false,
+      employee: {
+        empIdentity: "",
+        empFullname: "",
+        empPhoneNumber: "",
+        empAddress: "",
+        empAddress2: ""
+      },
+      district: "",
+      zipcode: ""
+    };
+  },
   computed: {
     app_id() {
       return this.$store.state.app_Id;
@@ -104,6 +166,41 @@ export default {
     },
     isLoading() {
       return this.$store.state.isLoading;
+    },
+    hasIdentity() {
+      return this.employee.empIdentity.length === 13;
+    },
+    hasName() {
+      return this.employee.empFullname.length > 6;
+    },
+    hasTel() {
+      return this.employee.empPhoneNumber.length === 10;
+    },
+    hasAddress() {
+      return this.employee.empAddress.length > 0;
+    },
+    hasCountry() {
+      return this.zipcode.length === 5;
+    }
+  },
+  methods: {
+    toggle() {
+      this.open = !this.open;
+      this.employee.empAddress2 = "";
+      this.zipcode = "";
+    },
+    select(address) {
+      this.employee.empAddress2 =
+        " " +
+        address.district +
+        " " +
+        address.amphoe +
+        " " +
+        address.province +
+        " " +
+        address.zipcode;
+      this.zipcode = address.zipcode;
+      this.open = !this.open;
     }
   }
 };

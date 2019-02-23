@@ -57,6 +57,7 @@ label {
     display: block;
     text-align: left;
     padding-top: 1rem;
+    padding-bottom: 4px;
 }
 
 .ui.input {
@@ -148,4 +149,8 @@ h2.ui.header {
 
 .ml-0 {
     margin-left: 0 !important;
+}
+
+.ml-2 {
+    margin-left: 2rem;
 }

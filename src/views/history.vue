@@ -121,9 +121,6 @@
         />
       </sui-modal-actions>
     </sui-modal>
-    <div class="footer">
-      <p>&copy; 2019 Unfac.co</p>
-    </div>
   </div>
 </template>
 
