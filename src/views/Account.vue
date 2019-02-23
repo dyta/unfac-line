@@ -71,7 +71,8 @@ export default {
         empFullname: this.$store.state.user.empFullname,
         empPhoneNumber: this.$store.state.user.empPhoneNumber,
         empAddress: this.$store.state.user.empAddress,
-        empAddress2: this.$store.state.user.empAddress2
+        empAddress2: this.$store.state.user.empAddress2,
+        empStatus: 3
       },
       district: "",
       zipcode: ""

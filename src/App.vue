@@ -41,6 +41,7 @@
             :positive="hasIdentity && hasName && hasTel && hasAddress && hasCountry"
             :disabled="!hasIdentity || !hasName || !hasTel || !hasAddress || !hasCountry"
             fluid
+            @click="onCLickUpdateProfile"
             size="big"
             content="ยืนยัน"
             class="pt-3"
@@ -143,11 +144,12 @@ export default {
     return {
       open: false,
       employee: {
-        empIdentity: "",
-        empFullname: "",
-        empPhoneNumber: "",
-        empAddress: "",
-        empAddress2: ""
+        empIdentity: "1520600078080",
+        empFullname: "Nattawut Kitiwan ",
+        empPhoneNumber: "0957192597",
+        empAddress: "120/784",
+        empAddress2: "",
+        empStatus: 2
       },
       district: "",
       zipcode: ""
@@ -208,7 +210,21 @@ export default {
       this.zipcode = address.zipcode;
       this.open = !this.open;
     },
-    onCLickUpdateProfile() {}
+    onCLickUpdateProfile() {
+      let self = this;
+      return new Promise(function(resolve, reject) {
+        self.$api
+          .put(`/app/employee/${self.user.empId}`, self.employee)
+          .then(function(res) {
+            if (res.data) {
+              resolve(self.$router.go("/"));
+            } else {
+              reject(alert(res.data));
+            }
+            self.$store.commit("setLoading", false);
+          });
+      });
+    }
   }
 };
 </script>
