@@ -157,6 +157,9 @@ export default {
       zipcode: ""
     };
   },
+  created() {
+    this.$store.commit("setLoading", false);
+  },
   computed: {
     app_id() {
       return this.$store.state.app_Id;
@@ -229,8 +232,11 @@ export default {
           .put(`/app/employee/${self.user.empId}/${self.user.entId}`, data)
           .then(function(res) {
             if (res) {
-              self.$store.commit("setLoading", true);
-              self.$router.go("/");
+              self.$router.go(
+                `/?appid=${self.$store.state.appData.entId}&key=${
+                  self.$store.state.apiKey
+                }`
+              );
               resolve();
             } else {
               reject();
