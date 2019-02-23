@@ -176,7 +176,7 @@ export default {
       return this.employee.empIdentity.length === 13;
     },
     hasName() {
-      return this.employee.empFullname.length > 6;
+      return this.employee.empFullname.length > 0;
     },
     hasTel() {
       return this.employee.empPhoneNumber.length === 10;
