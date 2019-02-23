@@ -76,10 +76,13 @@
         <sui-container text>
           <img src="./assets/logo.png" width="80">
           <h2 is="sui-header">อยู่ระหว่างการตรวจสอบข้อมูล</h2>
+          <small>เพื่อยืนยันการเป็นพนักงานกับ {{appData.entName}}</small>
+          <br>
+          <small>ใช้เวลาไม่นาน หากข้อมูลมีความถูกต้อง</small>
+          <br>
           <small>
             คุณ
-            <b>{{user.empDisplayName}}</b>
-            อยู่ระหว่างการตรวจสอบข้อมูลเพื่อยืนยันการเป็นพนักงาน
+            <b>{{user.empFullname}}</b> จะได้รับการแจ้งเตือนหากมีการเปลี่ยนแปลง
           </small>
           <sui-button
             size="large"
@@ -97,7 +100,9 @@
       >
         <sui-container text>
           <img src="./assets/logo.png" width="80">
-          <h2 is="sui-header">บัญชีของคุณไม่ได้รับอนุญาติให้ใช้งาน</h2>
+          <h2 is="sui-header">บัญชีของคุณ
+            <br>ไม่ได้รับอนุญาติให้ใช้งาน
+          </h2>
           <small>
             กรุณาติดต่อ {{appData.entName}} -
             <u>{{appData.entTel}}</u>
@@ -202,7 +207,8 @@ export default {
         address.zipcode;
       this.zipcode = address.zipcode;
       this.open = !this.open;
-    }
+    },
+    onCLickUpdateProfile() {}
   }
 };
 </script>
