@@ -157,9 +157,6 @@ export default {
       zipcode: ""
     };
   },
-  created() {
-    this.$store.commit("setLoading", false);
-  },
   computed: {
     app_id() {
       return this.$store.state.app_Id;
@@ -237,7 +234,7 @@ export default {
                   self.$store.state.apiKey
                 }`
               );
-              resolve();
+              resolve(self.$store.commit("setLoading", false));
             } else {
               reject();
             }
