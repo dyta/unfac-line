@@ -6,7 +6,6 @@
     color: #2c3e50;
 }
 
-
 .unauth {
     display: flex;
     height: 100vh;
@@ -16,6 +15,10 @@
 
 .content {
     margin-top: 2rem;
+}
+
+.form-emp {
+    display: block !important;
 }
 
 .text-left {
@@ -50,6 +53,16 @@
     margin-top: 0;
 }
 
+label {
+    display: block;
+    text-align: left;
+    padding-top: 1rem;
+}
+
+.ui.input {
+    width: 100%;
+}
+
 .get-choose {
     font-size: 4em;
 }
@@ -59,6 +72,9 @@ small.price {
     font-size: 12px;
 }
 
+h2.ui.header {
+    margin-top: 0;
+}
 
 @media (max-width: 769px) {
     .ui.modal {
@@ -74,6 +90,21 @@ small.price {
 
 }
 
+.mt-5 {
+    margin-top: 5rem;
+}
+
+.mt-4 {
+    margin-top: 4rem;
+}
+
+.mt-3 {
+    margin-top: 3rem;
+}
+
+.mt-2 {
+    margin-top: 2rem;
+}
 
 .pt-5 {
     padding-top: 5rem;

@@ -1,45 +1,85 @@
 <template>
   <div id="app">
     <sui-dimmer :active="isLoading" inverted>
-      <sui-loader indeterminate content="Loading..."/>
+      <sui-loader indeterminate content="กำลังโหลด..."/>
     </sui-dimmer>
-    <div v-if="app_id && apiKey && appData && user && user.userAuth != 0">
+    <div
+      v-if="app_id && apiKey && appData && user && user.empStatus === 3 && user.userAuth != 0 && liff"
+    >
       <div>
         <router-view/>
       </div>
     </div>
-
-    <div
-      class="unauth"
-      v-else-if="!app_id || !apiKey || !appData || !user || isLoading || user.userAuth == 0"
-    >
-      <sui-container text v-if="!isLoading">
-        <img src="./assets/logo.png" width="80">
-
-        <div v-if="liff">
+    <div v-else>
+      <div v-if="!isLoading && user && user.empStatus === 1" class="pt-5">
+        <sui-container text>
+          <img src="./assets/logo.png" width="80">
+          <h2 is="sui-header">กรอกข้อมูลพนักงาน</h2>
+          <label>เลขบัตรประชาชน</label>
+          <sui-input placeholder="0-0000-00000-00-0"/>
+          <label>ชื่อ</label>
+          <sui-input/>
+          <label>นามสกุล</label>
+          <sui-input/>
+          <label>เบอร์โทร</label>
+          <sui-input placeholder="0987654321"/>
+          <label>ที่อยู่</label>
+          <sui-input placeholder="เลขที่ อาคาร หมู่ ถนน"/>
+        </sui-container>
+      </div>
+      <div class="unauth" v-else-if="!isLoading && user && user.empStatus === 2">
+        <sui-container text>
+          <img src="./assets/logo.png" width="80">
           <h2 is="sui-header">อยู่ระหว่างการตรวจสอบข้อมูล</h2>
-          <p>
-            ผู้ใช้
+          <small>
+            คุณ
             <b>{{user.empDisplayName}}</b>
-            อยู่ระหว่างการตรวจสอบข้อมูล
-          </p>
+            อยู่ระหว่างการตรวจสอบข้อมูลเพื่อยืนยันการเป็นพนักงาน
+          </small>
           <sui-button
             size="large"
             circular
             basic
             fluid
+            style="margin-top: 2rem"
             @click="()=> $liff.closeWindow()"
           >ปิดหน้าต่าง</sui-button>
-        </div>
-        <div v-else>
-          <h2 is="sui-header">Incorrect access detected.</h2>
-          <p class="error">This server may be accessed only through LINE Applicaiton.</p>
+        </sui-container>
+      </div>
+      <div
+        class="unauth"
+        v-else-if="!isLoading && user && user.empStatus === 3 && user.userAuth === 0"
+      >
+        <sui-container text>
+          <img src="./assets/logo.png" width="80">
+          <h2 is="sui-header">บัญชีของคุณไม่ได้รับอนุญาติให้ใช้งาน</h2>
           <small>
-            Sorry, Please notify
-            <a href="https://console.unfac.co">server administrator.</a>
+            กรุณาติดต่อ {{appData.entName}} -
+            <u>{{appData.entTel}}</u>
           </small>
-        </div>
-      </sui-container>
+          <sui-button
+            size="large"
+            circular
+            basic
+            fluid
+            style="margin-top: 2rem"
+            @click="()=> $liff.closeWindow()"
+          >ปิดหน้าต่าง</sui-button>
+        </sui-container>
+      </div>
+      <div class="unauth" v-else>
+        <sui-container text>
+          <div v-if="!isLoading">
+            <img src="./assets/logo.png" width="80">
+            <h2 is="sui-header">Incorrect access detected.</h2>
+            <p class="error">This server may be accessed only through LINE Applicaiton.</p>
+            <small>
+              Sorry, Please notify
+              <a href="https://console.unfac.co">server administrator.</a>
+            </small>
+          </div>
+        </sui-container>
+      </div>
     </div>
   </div>
 </template>
