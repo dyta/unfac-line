@@ -257,7 +257,9 @@ export default {
         rwEndAt: self.$moment(data.workEndAt).subtract(1, "days"),
         rwVolume: self.request.amount,
         rwWorkId: data.workId,
-        workPickVolume: (data.workPickVolume + self.request.amount) * 1
+        workPickVolume: (data.workPickVolume + self.request.amount) * 1,
+        empFullname: self.user.empFullname,
+        empPictureUrl: self.user.empPictureUrl
       };
 
       const CreateRequest = await self.$api.post(
