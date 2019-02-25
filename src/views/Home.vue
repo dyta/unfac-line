@@ -31,7 +31,7 @@
                   state="active"
                   indicating
                   size="tiny"
-                  :label="`อนุมัติแล้ว ${item.approvedSum ? item.approvedSum : 0}/${item.workVolume}`"
+                  :label="`คงเหลือ ${item.workVolume - item.approvedSum*1}`"
                 />
               </sui-item-description>
               <sui-button-group attached="bottom" class="pt-1">
