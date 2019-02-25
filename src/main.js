@@ -37,6 +37,7 @@ new Vue({
   created: async function () {
     /* eslint-disable */
     const self = this;
+
     const APP_ID = await self.$route.query.appid;
     const KEY = await self.$route.query.key;
 
@@ -57,12 +58,14 @@ new Vue({
             );
             if (user.data) {
               const UpdateUser = await self.$api.put(
-                `/app/employee/${profile.userId}/${APP_ID}`, profile
+                `/app/employee/${profile.userId}/${APP_ID}/profile`, profile
               );
-              if (UpdateUser) {
+
+              if (UpdateUser.data) {
                 store.commit("setLiff", true);
                 store.commit("setUser", user.data);
               }
+
             } else {
               const createUser = await self.$api.post(
                 `/app/employee/${profile.userId}/${APP_ID}`,
