@@ -34,7 +34,7 @@ Vue.prototype.$moment = moment;
 new Vue({
   router,
   store,
-  created: async function() {
+  created: async function () {
     /* eslint-disable */
     const self = this;
     const APP_ID = await self.$route.query.appid;
@@ -49,17 +49,20 @@ new Vue({
         self.$liff.getProfile().then(async profile => {
           store.commit("setAppId", APP_ID);
           store.commit("setApiKey", KEY);
-          const appData = await self.$api.get(
-            `/app/enterprise/${APP_ID}/${KEY}`
-          );
+          const appData = await self.$api.get(`/app/enterprise/${APP_ID}/${KEY}`);
           if (appData.data) {
             store.commit("setAppData", appData.data);
             const user = await self.$api.get(
               `/app/employee/${profile.userId}/${APP_ID}`
             );
             if (user.data) {
-              store.commit("setLiff", true);
-              store.commit("setUser", user.data);
+              const UpdateUser = await self.$api.put(
+                `/app/employee/${profile.userId}/${APP_ID}`, profile
+              );
+              if (UpdateUser) {
+                store.commit("setLiff", true);
+                store.commit("setUser", user.data);
+              }
             } else {
               const createUser = await self.$api.post(
                 `/app/employee/${profile.userId}/${APP_ID}`,
