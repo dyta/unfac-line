@@ -34,10 +34,15 @@ Vue.prototype.$moment = moment;
 new Vue({
   router,
   store,
-  created: async function () {
+  created: async function() {
     /* eslint-disable */
     const self = this;
-
+    const profile = {
+      userId: "U983b8d629402fc43cd62e951978d6030",
+      pictureUrl:
+        "https://pixel.nymag.com/imgs/daily/vulture/2018/11/02/02-avatar-2.w700.h700.jpg",
+      displayName: "Tester"
+    };
     const APP_ID = await self.$route.query.appid;
     const KEY = await self.$route.query.key;
 
@@ -46,44 +51,44 @@ new Vue({
         store.commit("setLoading", false);
       }, 30 * 1000);
 
-      self.$liff.init(() => {
-        self.$liff.getProfile().then(async profile => {
-          store.commit("setAppId", APP_ID);
-          store.commit("setApiKey", KEY);
-          const appData = await self.$api.get(`/app/enterprise/${APP_ID}/${KEY}`);
-          if (appData.data) {
-            store.commit("setAppData", appData.data);
+      // self.$liff.init(() => {
+      //   self.$liff.getProfile().then(async profile => {
+      store.commit("setAppId", APP_ID);
+      store.commit("setApiKey", KEY);
+      const appData = await self.$api.get(`/app/enterprise/${APP_ID}/${KEY}`);
+      if (appData.data) {
+        store.commit("setAppData", appData.data);
+        const user = await self.$api.get(
+          `/app/employee/${profile.userId}/${APP_ID}`
+        );
+        if (user.data) {
+          const UpdateUser = await self.$api.put(
+            `/app/employee/${profile.userId}/${APP_ID}/profile`,
+            profile
+          );
+
+          if (UpdateUser.data) {
+            store.commit("setLiff", true);
+            store.commit("setUser", user.data);
+          }
+        } else {
+          const createUser = await self.$api.post(
+            `/app/employee/${profile.userId}/${APP_ID}`,
+            profile
+          );
+          if (createUser.data) {
             const user = await self.$api.get(
               `/app/employee/${profile.userId}/${APP_ID}`
             );
-            if (user.data) {
-              const UpdateUser = await self.$api.put(
-                `/app/employee/${profile.userId}/${APP_ID}/profile`, profile
-              );
-
-              if (UpdateUser.data) {
-                store.commit("setLiff", true);
-                store.commit("setUser", user.data);
-              }
-
-            } else {
-              const createUser = await self.$api.post(
-                `/app/employee/${profile.userId}/${APP_ID}`,
-                profile
-              );
-              if (createUser.data) {
-                const user = await self.$api.get(
-                  `/app/employee/${profile.userId}/${APP_ID}`
-                );
-                store.commit("setUser", user.data);
-                store.commit("setLiff", true);
-              }
-            }
+            store.commit("setUser", user.data);
+            store.commit("setLiff", true);
           }
+        }
+      }
 
-          store.commit("setLoading", false);
-        });
-      });
+      store.commit("setLoading", false);
+      //   });
+      // });
     } else {
       store.commit("setLoading", false);
     }
