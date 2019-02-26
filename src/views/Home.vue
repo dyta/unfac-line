@@ -164,8 +164,8 @@ export default {
     valid() {
       return (
         this.request.amount !== 0 &&
-        this.request.amount <= 5 &&
-        this.request.amount <= this.record.workVolume - this.record.approved
+        this.request.amount <= this.user.empCapacity &&
+        this.request.amount <= this.record.workVolume - this.record.approvedSum
       );
     }
   },
@@ -173,8 +173,8 @@ export default {
     addAmount() {
       if (this.record) {
         return this.request.amount <
-          this.record.workVolume - this.record.approved &&
-          this.request.amount < 5 // limit แต่ละ user
+          this.record.workVolume - this.record.approvedSum &&
+          this.request.amount < this.user.empCapacity // limit แต่ละ user
           ? this.request.amount++
           : false;
       }
