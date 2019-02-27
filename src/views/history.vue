@@ -165,7 +165,8 @@ export default {
   methods: {
     addAmount() {
       if (this.record) {
-        return this.request.amount < this.record.maxVolume
+        return this.request.amount < this.record.maxVolume &&
+          this.request.amount < this.record.maxVolume - this.record.mfProgress
           ? this.request.amount++
           : false;
       }
@@ -257,6 +258,7 @@ export default {
     async onClickUpdateProgress() {
       let self = this;
       let data = this.record;
+      console.log("data: ", data);
 
       this.onClickLoading = true;
 
@@ -264,7 +266,12 @@ export default {
         `/app/manufacture/${self.app_Id}/progress`,
         {
           mfId: data.mfId,
-          progress: this.request.amount
+          progress: this.request.amount * 1,
+          mfProgress: data.mfProgress * 1,
+          avatar: this.user.empPictureUrl,
+          name: this.user.empFullname,
+          wId: data.workId,
+          max: data.maxVolume
         }
       );
 
