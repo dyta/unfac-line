@@ -23,15 +23,26 @@
                   <sui-label :color="status(item.mfStatus).color" circular empty horizontal/>
                   <b>{{status(item.mfStatus).text}}</b>
                   -
-                  ค่าจ้าง: {{item.workEarn}} บาท ({{item.workEarnType === 1 ? 'ต่อชิ้น': 'เหมา' }})
+                  ค่าจ้าง: {{formatPrice(item.workEarn)}} บาท ({{item.workEarnType === 1 ? 'ต่อชิ้น': 'เหมา' }})
                 </small>
                 <br>
-                <small>
+                <small v-if="item.mfStatus < 4">
                   <b>วันที่ทำรายการ:</b>
                   {{$moment(item.mfCreateAt).format('DD MMM YYYY HH:mm:ss')}}
                 </small>
+                <small v-else>
+                  <b>ดำเนินการ:</b>
+                  {{$moment(item.mfUpdateAt).format('DD MMM YYYY HH:mm:ss')}}
+                  <br>
+                  <span
+                    v-if="item.mfStatus === 4"
+                  >รายได้รวม {{formatPrice(item.workEarn * item.mfProgress)}} บาท</span>
+                  <span v-else>
+                    <i>--ยกเลิกรายการ--</i>
+                  </span>
+                </small>
               </sui-item-meta>
-              <sui-item-description>
+              <sui-item-description v-if="item.mfStatus < 4">
                 <sui-progress
                   :percent="percent(item.mfProgress, item.maxVolume)"
                   state="active"
@@ -39,17 +50,16 @@
                   size="tiny"
                   :label="`ความคืบหน้า ${item.mfProgress ? item.mfProgress : 0}/${item.maxVolume}`"
                 />
-              </sui-item-description>
-              <sui-button-group attached="bottom" class="pt-1">
+
                 <sui-button
-                  circular
+                  fluid
                   :disabled="item.mfProgress === item.maxVolume"
                   :positive="item.mfProgress !== item.maxVolume"
                   @click.native="toggle(item)"
                   content="ส่งอัพเดทความคืบหน้า"
                   :loading="onClickLoading"
                 />
-              </sui-button-group>
+              </sui-item-description>
             </sui-item-content>
           </sui-item>
         </sui-item-group>
@@ -163,6 +173,10 @@ export default {
     }
   },
   methods: {
+    formatPrice(value) {
+      let val = (value / 1).toFixed(2).replace(",", ".");
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
     addAmount() {
       if (this.record) {
         return this.request.amount < this.record.maxVolume &&
