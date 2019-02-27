@@ -235,6 +235,7 @@ export default {
             self.items = res.data;
             resolve(res.data);
           } else {
+            self.items = [];
             resolve();
           }
           self.$store.commit("setLoading", false);

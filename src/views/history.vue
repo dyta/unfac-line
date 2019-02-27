@@ -243,6 +243,7 @@ export default {
               self.items = res.data;
               resolve(res.data);
             } else {
+              self.items = [];
               resolve();
             }
             self.onClickLoading = false;
@@ -258,8 +259,6 @@ export default {
     async onClickUpdateProgress() {
       let self = this;
       let data = this.record;
-      console.log("data: ", data);
-
       this.onClickLoading = true;
 
       const UpdateProgress = await self.$api.put(
