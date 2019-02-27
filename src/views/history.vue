@@ -271,7 +271,10 @@ export default {
           avatar: this.user.empPictureUrl,
           name: this.user.empFullname,
           wId: data.workId,
-          max: data.maxVolume
+          max: data.maxVolume,
+          line: this.user.empLineId,
+          tel: this.appData.entTel,
+          now: new Date().getTime()
         }
       );
 
