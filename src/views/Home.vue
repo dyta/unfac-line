@@ -27,19 +27,19 @@
               </sui-item-meta>
               <sui-item-description>
                 <sui-progress
-                  :percent="percent(item.approvedSum, item.workVolume)"
+                  :percent="percent(item.approvedSum+item.completeSum, item.workVolume)"
                   state="active"
                   indicating
                   size="tiny"
-                  :label="`คงเหลือ ${item.workVolume - item.approvedSum*1}`"
+                  :label="`คงเหลือ ${item.workVolume - (item.approvedSum+item.completeSum)}`"
                 />
               </sui-item-description>
               <sui-button-group attached="bottom" class="pt-1">
                 <sui-button content="รายละเอียด" circular/>
                 <sui-button
                   circular
-                  :disabled="expired(item.workEndAt) || item.workStatus === 5 || item.approvedSum === item.workVolume"
-                  :positive="!expired(item.workEndAt) && item.workStatus !== 5 && item.approvedSum !== item.workVolume"
+                  :disabled="expired(item.workEndAt) || item.workStatus === 5 || (item.approvedSum+item.completeSum) === item.workVolume"
+                  :positive="!expired(item.workEndAt) && item.workStatus !== 5 && (item.approvedSum+item.completeSum) !== item.workVolume"
                   @click.native="toggle(item)"
                   content="ขอรับงาน"
                 />
