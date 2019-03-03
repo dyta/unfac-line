@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isLoading">
     <sui-container text v-if="!isLoading">
-      <sui-card class="text-left mt-2" style="width: 100%">
+      <sui-card class="text-left mt-2" style="width: 100%; box-shadow: none">
         <sui-card-content>
           <sui-card-header>
             คงเหลือในบัญชี
