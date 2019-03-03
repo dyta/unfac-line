@@ -1,9 +1,12 @@
 <template>
   <div v-if="!isLoading">
     <sui-container text v-if="!isLoading">
-      <sui-card class="text-left mt-3" style="width: 100%">
+      <sui-card class="text-left mt-2" style="width: 100%">
         <sui-card-content>
-          <sui-card-header>คงเหลือในบัญชี</sui-card-header>
+          <sui-card-header>
+            คงเหลือในบัญชี
+            <small style="font-size: 10px">หัก {{tax}}%</small>
+          </sui-card-header>
         </sui-card-content>
         <sui-card-content>
           <sui-statistic horizontal color="green">
@@ -19,8 +22,7 @@
             @click="withdraw"
           >เบิกเงิน*</sui-button>
           <small>
-            *ขั้นต่ำ 100 บาท -
-            <small>อัพเดทเมื่อ: {{$moment().format("DD MMM YYYY HH:mm:ss น.")}}</small>
+            <small>*ขั้นต่ำ 100 บาท - อัพเดทเมื่อ: {{$moment().format("DD MMM YYYY HH:mm:ss น.")}}</small>
           </small>
         </sui-card-content>
       </sui-card>
@@ -34,7 +36,8 @@ export default {
   data() {
     return {
       sum: 0,
-      fullSum: 0
+      fullSum: 0,
+      tax: 0
     };
   },
   created() {
@@ -66,11 +69,14 @@ export default {
         .then(function(res) {
           if (res.data.length > 0) {
             let total = 0;
+            self.tax = res.data[0].workTAX;
             res.data.forEach(e => {
               if (e.workEarnType === 1) {
-                total += e.workEarn * e.mfProgress;
+                total +=
+                  e.workEarn * e.mfProgress -
+                  (e.workEarn * e.mfProgress * e.workTAX) / 100;
               } else {
-                total += e.workEarn * 1;
+                total += e.workEarn * 1 - (e.workEarn * 1 * e.workTAX) / 100;
               }
             });
             let val = (total / 1).toFixed(2).replace(",", ".");
