@@ -92,7 +92,7 @@ export default {
     };
   },
   watch: {
-    statusWork(newVal, old) {
+    statusWork() {
       this.updateStatusForWork();
     }
   },
@@ -141,7 +141,9 @@ export default {
           statusWork
         })
         .then(function(res) {
-          self.$store.commit("setLoading", false);
+          if (res) {
+            self.$store.commit("setLoading", false);
+          }
         });
     },
     toggle() {
