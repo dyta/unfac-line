@@ -6,6 +6,15 @@
 
         <h2 is="sui-header">ข้อมูลส่วนตัว</h2>
         <sui-divider/>
+        <label style="padding-top: 0">สถานะการว่างงาน</label>
+        <div class="text-left mt-1 mb-1">
+          <sui-checkbox
+            :label="statusWork ? 'ว่างงาน/จะได้รับการแจ้งเตือนงาน' :'ไม่ว่าง'"
+            toggle
+            v-model="statusWork"
+          />
+        </div>
+
         <label style="padding-top: 0">เลขบัตรประจำตัวประชาชน</label>
         <sui-input :value="employee.empIdentity" disabled inverted/>
         <label>ชื่อ-นามสกุล</label>
@@ -22,15 +31,17 @@
         <label>พื้นที่</label>
         <sui-button @click.native="toggle" fluid size="large">เลือกพื้นที่</sui-button>
         <br>
-        <sui-button
-          :positive="hasIdentity && hasName && hasTel && hasAddress && hasCountry"
-          :disabled="!hasIdentity || !hasName || !hasTel || !hasAddress || !hasCountry"
-          fluid
-          size="big"
-          @click="onCLickUpdateProfile"
-          content="แก้ไขข้อมูล"
-          class="pt-3"
-        />
+        <div class="mb-5">
+          <sui-button
+            :positive="hasIdentity && hasName && hasTel && hasAddress && hasCountry"
+            :disabled="!hasIdentity || !hasName || !hasTel || !hasAddress || !hasCountry"
+            fluid
+            size="big"
+            @click="onCLickUpdateProfile"
+            content="แก้ไขข้อมูล"
+            class="pt-3"
+          />
+        </div>
         <sui-modal v-model="open">
           <sui-modal-content>
             <sui-modal-description>
@@ -76,8 +87,14 @@ export default {
         empStatus: 3
       },
       district: "",
-      zipcode: ""
+      zipcode: "",
+      statusWork: this.$store.state.user.empStatus === 3 ? true : false
     };
+  },
+  watch: {
+    statusWork(newVal, old) {
+      this.updateStatusForWork();
+    }
   },
   computed: {
     app_id() {
@@ -115,6 +132,18 @@ export default {
     }
   },
   methods: {
+    updateStatusForWork() {
+      let self = this;
+      let statusWork = self.statusWork;
+      self.$store.commit("setLoading", true);
+      self.$api
+        .put(`/app/employee/${self.user.empLineId}/${self.user.entId}/status`, {
+          statusWork
+        })
+        .then(function(res) {
+          self.$store.commit("setLoading", false);
+        });
+    },
     toggle() {
       this.open = !this.open;
       this.employee.empAddress2 = "";

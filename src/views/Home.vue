@@ -38,12 +38,17 @@
                 <sui-button content="รายละเอียด" circular/>
                 <sui-button
                   circular
-                  :disabled="expired(item.workEndAt) || item.workStatus === 5 || (item.approvedSum+item.completeSum) === item.workVolume"
-                  :positive="!expired(item.workEndAt) && item.workStatus !== 5 && (item.approvedSum+item.completeSum) !== item.workVolume"
+                  :disabled="expired(item.workEndAt) || item.workStatus === 5 || (item.approvedSum+item.completeSum) === item.workVolume || user.empStatus !== 3"
+                  :positive="!expired(item.workEndAt) && item.workStatus !== 5 && (item.approvedSum+item.completeSum) !== item.workVolume "
                   @click.native="toggle(item)"
-                  content="ขอรับงาน"
-                />
+                >{{user.empStatus === 3 ? 'ขอรับงาน' : 'สถานะไม่ว่างงาน'}}</sui-button>
               </sui-button-group>
+              <small v-if="user.empStatus !== 3" class="text-danger">
+                *คุณอยู่ในสถานะไม่ว่างงาน สามารถเปลี่ยนแปลงได้ที่เมนูข้อมูลส่วนตัว
+                <u
+                  @click="()=> $router.push(`/account/?appid=${app_Id}&key=${apiKey}`)"
+                >หรือคลิ๊กที่นี่</u>
+              </small>
             </sui-item-content>
           </sui-item>
         </sui-item-group>
@@ -308,5 +313,8 @@ export default {
   padding: 4px 0;
   background: #e4e4e4;
   font-size: 10px;
+}
+.text-danger {
+  color: #db2828;
 }
 </style>

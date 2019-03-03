@@ -4,7 +4,7 @@
       <sui-loader indeterminate content="กำลังโหลด..."/>
     </sui-dimmer>
     <div
-      v-if="app_id && apiKey && appData && user && user.empStatus === 3 && user.userAuth != 0 && liff"
+      v-if="app_id && apiKey && appData && user && (user.empStatus === 3 || user.empStatus === 4) && user.userAuth != 0 && liff"
     >
       <div>
         <router-view/>
